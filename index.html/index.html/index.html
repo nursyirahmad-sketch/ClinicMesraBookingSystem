@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>Clinic Mesra - Appointment Booking System</title>
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        .navbar-brand {
+            font-weight: bold;
+            font-size: 1.5rem;
+        }
+        .card {
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            border: none;
+        }
+        .btn-primary {
+            background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+            border: none;
+            border-radius: 10px;
+            padding: 10px 20px;
+            font-weight: bold;
+        }
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            transition: 0.3s;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+        .btn-danger {
+            border-radius: 8px;
+        }
+        .table {
+            background: white;
+            border-radius: 15px;
+            overflow: hidden;
+        }
+        .status-badge {
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: bold;
+        }
+        .status-confirmed {
+            background: #d4edda;
+            color: #155724;
+        }
+        footer {
+            text-align: center;
+            padding: 20px;
+            color: white;
+            margin-top: 40px;
+        }
+        @media (max-width: 768px) {
+            .card {
+                margin: 10px;
+            }
+            h1 {
+                font-size: 1.8rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Navigation Bar -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="container">
+            <a class="navbar-brand" href="#">
+                <i class="fas fa-clinic-medical"></i> Clinic Mesra
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link active" href="#" onclick="showPage('home')">
+                            <i class="fas fa-home"></i> Home
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#" onclick="showPage('booking')">
+                            <i class="fas fa-calendar-plus"></i> Book Appointment
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#" onclick="showPage('view')">
+                            <i class="fas fa-list"></i> View Appointments
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container mt-4">
+        <!-- Home Page -->
+        <div id="homePage" class="page-content">
+            <div class="card">
+                <div class="card-body p-4">
+                    <h1 class="text-center mb-4">
+                        <i class="fas fa-hand-holding-heart"></i> Welcome to Clinic Mesra
+                    </h1>
+                    <p class="text-center lead">Online Patient Appointment System</p>
+                    <hr>
+                    <div class="row mt-5">
+                        <div class="col-md-4 text-center mb-4">
+                            <i class="fas fa-clock fa-3x text-primary"></i>
+                            <h4 class="mt-2">Operating Hours</h4>
+                            <p>Monday - Friday: 8am - 10pm<br>Saturday: 9am - 5pm<br>Sunday: Closed</p>
+                        </div>
+                        <div class="col-md-4 text-center mb-4">
+                            <i class="fas fa-map-marker-alt fa-3x text-danger"></i>
+                            <h4 class="mt-2">Location</h4>
+                            <p>No 88, Jalan SS21/35, Damansara Utama,<br>47400 Petaling Jaya, Selangor</p>
+                        </div>
+                        <div class="col-md-4 text-center mb-4">
+                            <i class="fas fa-phone fa-3x text-success"></i>
+                            <h4 class="mt-2">Contact Us</h4>
+                            <p>Tel: 03-7722 1234<br>Hotline: 012-345 6789</p>
+                        </div>
+                    </div>
+                    <div class="text-center mt-3">
+                        <button class="btn btn-primary btn-lg" onclick="showPage('booking')">
+                            <i class="fas fa-calendar-check"></i> Book Appointment Now
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Booking Page -->
+        <div id="bookingPage" class="page-content" style="display: none;">
+            <div class="card">
+                <div class="card-body p-4">
+                    <h2 class="text-center mb-4">
+                        <i class="fas fa-edit"></i> Appointment Form
+                    </h2>
+                    <form id="bookingForm">
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Full Name <span class="text-danger">*</span></label>
+                                <input type="text" class="form-control" id="name" placeholder="Enter your full name" required>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Phone Number <span class="text-danger">*</span></label>
+                                <input type="tel" class="form-control" id="phone" placeholder="e.g., 012-3456789" required>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Appointment Date <span class="text-danger">*</span></label>
+                                <input type="date" class="form-control" id="date" required>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Time <span class="text-danger">*</span></label>
+                                <select class="form-select" id="time" required>
+                                    <option value="">Select Time</option>
+                                    <option>9:00 AM</option>
+                                    <option>10:00 AM</option>
+                                    <option>11:00 AM</option>
+                                    <option>2:00 PM</option>
+                                    <option>3:00 PM</option>
+                                    <option>4:00 PM</option>
+                                    <option>5:00 PM</option>
+                                    <option>8:00 PM</option>
+                                </select>
+                            </div>
+                            <div class="col-md-12 mb-3">
+                                <label class="form-label">Service <span class="text-danger">*</span></label>
+                                <select class="form-select" id="service" required>
+                                    <option value="">Select Service</option>
+                                    <option>General Consultation - RM40</option>
+                                    <option>Dental Checkup - RM80</option>
+                                    <option>Wound Treatment - RM50</option>
+                                    <option>Vaccination - RM100</option>
+                                    <option>Health Screening - RM120</option>
+                                </select>
+                            </div>
+                            <div class="col-md-12 mb-3">
+                                <label class="form-label">Notes (optional)</label>
+                                <textarea class="form-control" id="notes" rows="2" placeholder="Example: Headache, fever, etc..."></textarea>
+                            </div>
+                        </div>
+                        <div class="text-center">
+                            <button type="submit" class="btn btn-primary btn-lg px-5">
+                                <i class="fas fa-save"></i> Submit Appointment
+                            </button>
+                            <button type="button" class="btn btn-secondary btn-lg px-3 ms-2" onclick="showPage('home')">
+                                <i class="fas fa-times"></i> Cancel
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- View Bookings Page -->
+        <div id="viewPage" class="page-content" style="display: none;">
+            <div class="card">
+                <div class="card-body p-4">
+                    <h2 class="text-center mb-4">
+                        <i class="fas fa-calendar-alt"></i> Appointment List
+                    </h2>
+                    <div class="table-responsive">
+                        <table class="table table-hover" id="bookingsTable">
+                            <thead class="table-dark">
+                                <tr>
+                                    <th>No.</th>
+                                    <th>Name</th>
+                                    <th>Date</th>
+                                    <th>Time</th>
+                                    <th>Service</th>
+                                    <th>Status</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody id="bookingsList">
+                                <tr>
+                                    <td colspan="7" class="text-center">No appointments found. Please book a new appointment.</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="text-center mt-3">
+                        <button class="btn btn-success" onclick="showPage('booking')">
+                            <i class="fas fa-plus"></i> New Appointment
+                        </button>
+                        <button class="btn btn-danger" onclick="deleteAllBookings()">
+                            <i class="fas fa-trash-alt"></i> Delete All
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <p>&copy; 2026 Clinic Mesra - Digital Appointment System | Version 1.0</p>
+    </footer>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <script>
+        // Load bookings from localStorage
+        let bookings = JSON.parse(localStorage.getItem('clinicMesraBookings')) || [];
+
+        // Save to localStorage
+        function saveBookings() {
+            localStorage.setItem('clinicMesraBookings', JSON.stringify(bookings));
+        }
+
+        // Display page function
+        function showPage(page) {
+            document.getElementById('homePage').style.display = 'none';
+            document.getElementById('bookingPage').style.display = 'none';
+            document.getElementById('viewPage').style.display = 'none';
+            
+            if(page === 'home') {
+                document.getElementById('homePage').style.display = 'block';
+            } else if(page === 'booking') {
+                document.getElementById('bookingPage').style.display = 'block';
+            } else if(page === 'view') {
+                document.getElementById('viewPage').style.display = 'block';
+                displayBookings();
+            }
+            
+            // Update active nav
+            const navLinks = document.querySelectorAll('.nav-link');
+            navLinks.forEach(link => link.classList.remove('active'));
+            if(event && event.target) {
+                event.target.classList.add('active');
+            }
+        }
+
+        // Handle booking form submission
+        document.getElementById('bookingForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const name = document.getElementById('name').value;
+            const phone = document.getElementById('phone').value;
+            const date = document.getElementById('date').value;
+            const time = document.getElementById('time').value;
+            const service = document.getElementById('service').value;
+            const notes = document.getElementById('notes').value;
+            
+            // Validation
+            if(!name || !phone || !date || !time || !service) {
+                alert('Please fill in all required fields!');
+                return;
+            }
+            
+            // Check for duplicate booking (same date and time)
+            const existingBooking = bookings.find(b => b.date === date && b.time === time);
+            if(existingBooking) {
+                alert('Sorry, this time slot is already booked. Please choose another time.');
+                return;
+            }
+            
+            const newBooking = {
+                id: Date.now(),
+                name: name,
+                phone: phone,
+                date: date,
+                time: time,
+                service: service,
+                notes: notes,
+                status: 'Confirmed',
+                createdAt: new Date().toISOString()
+            };
+            
+            bookings.push(newBooking);
+            saveBookings();
+            
+            alert('✓ Appointment successfully booked!');
+            
+            // Reset form
+            document.getElementById('bookingForm').reset();
+            
+            // Ask if user wants to view bookings
+            if(confirm('View your appointment list now?')) {
+                showPage('view');
+            } else {
+                showPage('home');
+            }
+        });
+        
+        // Display all bookings in table
+        function displayBookings() {
+            const tbody = document.getElementById('bookingsList');
+            
+            if(bookings.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="7" class="text-center">No appointments found. Please book a new appointment.</td></tr>';
+                return;
+            }
+            
+            let html = '';
+            bookings.forEach((booking, index) => {
+                html += `
+                    <tr>
+                        <td>${index + 1}</td>
+                        <td>${escapeHtml(booking.name)}</td>
+                        <td>${booking.date}</td>
+                        <td>${booking.time}</td>
+                        <td>${escapeHtml(booking.service)}</td>
+                        <td>
+                            <span class="status-badge status-confirmed">
+                                <i class="fas fa-check-circle"></i> ${booking.status}
+                            </span>
+                        </td>
+                        <td>
+                            <button class="btn btn-sm btn-danger" onclick="deleteBooking(${booking.id})">
+                                <i class="fas fa-trash"></i> Delete
+                            </button>
+                        </td>
+                    </tr>
+                `;
+            });
+            tbody.innerHTML = html;
+        }
+        
+        // Helper function to escape HTML
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+        
+        // Delete single booking
+        function deleteBooking(id) {
+            if(confirm('Are you sure you want to delete this appointment?')) {
+                bookings = bookings.filter(booking => booking.id !== id);
+                saveBookings();
+                displayBookings();
+                alert('Appointment has been deleted.');
+            }
+        }
+        
+        // Delete all bookings
+        function deleteAllBookings() {
+            if(confirm('⚠️ WARNING: This will delete ALL appointments. Are you sure?')) {
+                bookings = [];
+                saveBookings();
+                displayBookings();
+                alert('All appointments have been deleted.');
+            }
+        }
+        
+        // Set minimum date for booking (cannot book past date)
+        const today = new Date().toISOString().split('T')[0];
+        const dateInput = document.getElementById('date');
+        if(dateInput) {
+            dateInput.setAttribute('min', today);
+        }
+        
+        // Auto display on page load
+        window.onload = function() {
+            showPage('home');
+        };
+    </script>
+</body>
+</html>
